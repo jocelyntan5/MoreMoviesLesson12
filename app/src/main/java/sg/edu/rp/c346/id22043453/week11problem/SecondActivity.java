@@ -17,7 +17,7 @@ public class SecondActivity extends AppCompatActivity {
 
     ListView lv;
     Spinner spinner;
-    Button button;
+    Button btnPG13;
     ArrayAdapter<Movie> adapter;
     DBHelper dbHelper;
 
@@ -29,7 +29,7 @@ public class SecondActivity extends AppCompatActivity {
         dbHelper = new DBHelper(this);
         lv = findViewById(R.id.lv);
         spinner = findViewById(R.id.spinner);
-        button = findViewById(R.id.button);
+        btnPG13 = findViewById(R.id.buttonPG13);
 
         ArrayList<Movie> songList = dbHelper.getMovie();
         adapter = new CustomAdapter(this, android.R.layout.simple_list_item_1, songList);
@@ -46,15 +46,16 @@ public class SecondActivity extends AppCompatActivity {
             }
         });
 
-        button.setOnClickListener(new View.OnClickListener() {
+        btnPG13.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ArrayList<Movie> fivestar = dbHelper.getFiveStars();
+                ArrayList<Movie> pg13MoviesList = dbHelper.getPG13Movies(DBHelper.RATING_PG13);
                 adapter.clear();
-                adapter.addAll(fivestar);
+                adapter.addAll(pg13MoviesList);
                 adapter.notifyDataSetChanged();
             }
         });
+
         ArrayList<Integer> spinneryears = dbHelper.getSpinnerYears();
         ArrayAdapter<Integer> spinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, spinneryears);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);

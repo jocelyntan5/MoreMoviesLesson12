@@ -21,6 +21,12 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String COLUMN_GENRE = "genre";
     private static final String COLUMN_YEAR = "year";
     private static final String COLUMN_STARS = "stars";
+    public static final int RATING_G = 1;
+    public static final int RATING_PG = 2;
+    public static final int RATING_PG13 = 3;
+    public static final int RATING_NC16 = 4;
+    public static final int RATING_M18 = 5;
+    public static final int RATING_R21 = 6;
 
 
     public DBHelper(Context context) {
@@ -73,7 +79,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
 
     public ArrayList<Movie> getMovie() {
-        ArrayList<Movie> songList = new ArrayList<>();
+        ArrayList<Movie> movieList = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
         String[] columns = {COLUMN_ID, COLUMN_TITLE, COLUMN_GENRE, COLUMN_YEAR, COLUMN_STARS};
         Cursor cursor = db.query(TABLE_MOVIE, columns, null, null, null, null, null);
@@ -87,38 +93,37 @@ public class DBHelper extends SQLiteOpenHelper {
                 int stars = cursor.getInt(4);
                 //int stars = cursor.getInt(cursor.getColumnIndex(COLUMN_STARS));
                 Movie movie = new Movie(id, title, genre, year, stars);
-                songList.add(movie);
+                movieList.add(movie);
             } while (cursor.moveToNext());
         }
         cursor.close();
         db.close();
-        return songList;
+        return movieList;
     }
 
-    public ArrayList<Movie> getFiveStars() {
-        ArrayList<Movie> songList = new ArrayList<>();
+    public ArrayList<Movie> getPG13Movies(int rating) {
+        ArrayList<Movie> moviesList = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
         String[] columns = {COLUMN_ID, COLUMN_TITLE, COLUMN_GENRE, COLUMN_YEAR, COLUMN_STARS};
-        String select = COLUMN_STARS + " ?";
-        String[] selectArgs = {"5"};
-        Cursor cursor = db.query(TABLE_MOVIE, columns, select, selectArgs, null, null, null);
+        String selection = COLUMN_STARS + " = ?";
+        String[] selectionArgs = {String.valueOf(rating)};
+        Cursor cursor = db.query(TABLE_MOVIE, columns, selection, selectionArgs, null, null, null);
         if (cursor.moveToFirst()) {
             do {
-                int id = cursor.getInt(0);
-                String title = cursor.getString(1);
-                String genre = cursor.getString(2);
-                int year = cursor.getInt(3);
-                int stars = cursor.getInt(4);
+                int id = cursor.getInt(cursor.getColumnIndex(COLUMN_ID));
+                String title = cursor.getString(cursor.getColumnIndex(COLUMN_TITLE));
+                String genre = cursor.getString(cursor.getColumnIndex(COLUMN_GENRE));
+                int year = cursor.getInt(cursor.getColumnIndex(COLUMN_YEAR));
+                int movieRating = cursor.getInt(cursor.getColumnIndex(COLUMN_STARS));
 
-                Movie movie = new Movie(id, title, genre, year, stars);
-                songList.add(movie);
+                // Create a new Movies object and add it to the list
+                Movie movie = new Movie(id, title, genre, year, movieRating);
+                moviesList.add(movie);
             } while (cursor.moveToNext());
-
         }
         cursor.close();
         db.close();
-        return songList;
-
+        return moviesList;
     }
 
     public ArrayList<Integer> getSpinnerYears() {

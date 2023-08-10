@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Week11 Problem</string>
 
-    <string-array name="movieRatings">
+    <string-array name="movie_ratings">
         <item>G</item>
         <item>PG</item>
         <item>PG13</item>

@@ -1,8 +1,10 @@
 package sg.edu.rp.c346.id22043453.week11problem;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -54,8 +56,25 @@ public class ThirdActivity extends AppCompatActivity {
         dtlbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dbHelper.deleteMovie(movie.getID());
-                finish();
+
+                AlertDialog.Builder myBuilder = new AlertDialog.Builder(ThirdActivity.this);
+                myBuilder.setTitle("Danger");
+                myBuilder.setMessage("Are you sure you want to delete the movie Saving Private Ryan");
+                myBuilder.setCancelable(false);
+
+                myBuilder.setPositiveButton("DELETE", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dbHelper.deleteMovie(movie.getID());
+                        finish();
+                    }
+                });
+
+                myBuilder.setNeutralButton("Cancel", null);
+                AlertDialog myDialog = myBuilder.create();
+                myDialog.show();
+
+
             }
         });
     }

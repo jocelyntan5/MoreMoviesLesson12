@@ -5,7 +5,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -34,47 +37,40 @@ public class CustomAdapter extends ArrayAdapter {
             rowMovie = inflater.inflate(R.layout.row, parent, false);
         }
 
+        Movie movie = movieList.get(position);
 
-        TextView textViewSongTitle = rowMovie.findViewById(R.id.tvSongTitle);
-        TextView textViewSongYear = rowMovie.findViewById(R.id.tvSongYear);
-        TextView textViewSongRating = rowMovie.findViewById(R.id.tvSongRating);
-        TextView textViewSongGenre = rowMovie.findViewById(R.id.tvSongGenre);
+        ImageView imgMovieRating = rowMovie.findViewById(R.id.imageViewRating);
+        TextView tvMovieTitle = rowMovie.findViewById(R.id.tvMovieTitle);
+        TextView tvMovieYear = rowMovie.findViewById(R.id.tvMovieYear);
+        TextView tvMovieGenre = rowMovie.findViewById(R.id.tvMovieGenre);
 
-        Movie currentSong = movieList.get(position);
+        imgMovieRating.setImageResource(getRatingImageResource(movie.getStars()));
+        tvMovieTitle.setText(movie.getTitle());
+        tvMovieYear.setText("Release Year: " + movie.getYear());
+        tvMovieGenre.setText("Genre: " + movie.getGenre());
 
-        String[] songDetails = new String[] {
-                "Title: " + currentSong.getTitle(),
-                "Genre: " + currentSong.getGenre(),
-                "Year Released: " + currentSong.getYear(),
-                "Stars: " + getMovieStarRating(currentSong.getStars())
-        };
-
-
-        textViewSongTitle.setText(currentSong.getTitle());
-        textViewSongYear.setText(String.valueOf(currentSong.getYear()));
-        textViewSongRating.setText(getMovieStarRating(currentSong.getStars()));
-        textViewSongGenre.setText(currentSong.getGenre());
 
         return rowMovie;
 
+
     }
 
-    private String getMovieStarRating (int songStars) {
-        switch (songStars) {
-            case 1:
-                return "⭐";
-            case 2:
-                return "⭐⭐";
-            case 3:
-                return "⭐⭐⭐";
-            case 4:
-                return "⭐⭐⭐⭐";
-            case 5:
-                return "⭐⭐⭐⭐⭐";
-            default:
-                return "Nothing";
+    private int getRatingImageResource(int rating) {
+        if (rating == DBHelper.RATING_G) {
+            return R.drawable.rating_g;
+        } else if (rating == DBHelper.RATING_PG) {
+            return R.drawable.rating_pg;
+        } else if (rating == DBHelper.RATING_PG13) {
+            return R.drawable.rating_pg13;
+        } else if (rating == DBHelper.RATING_NC16) {
+            return R.drawable.rating_nc16;
+        } else if (rating == DBHelper.RATING_M18) {
+            return R.drawable.rating_m18;
+        } else if (rating == DBHelper.RATING_R21) {
+            return R.drawable.rating_r21;
+        } else {
+            return R.drawable.rating_g; // Replace this with your default rating image
         }
     }
-
 
 }

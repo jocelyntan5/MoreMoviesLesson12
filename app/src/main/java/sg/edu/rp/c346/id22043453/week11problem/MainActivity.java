@@ -13,16 +13,14 @@ import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    EditText etMovieTitle;
-    EditText etGenre;
-    EditText etYear;
-    Button btnInsert;
-    Button btnShowList;
+    EditText etMovieTitle, etGenre, etYear;
+    Button btnInsert, btnShowList;
     Spinner spinnerRating;
     ListView lvSong;
     ArrayAdapter<Movie> adapter;
@@ -47,16 +45,16 @@ public class MainActivity extends AppCompatActivity {
         Movie m1 = new Movie(1, "Hello", "Treasure", 2022, 5);
 
 
-        ArrayList<Movie> sList = new ArrayList<>();
-        sList.add(m1);
+        ArrayList<Movie> mList = new ArrayList<>();
+        mList.add(m1);
+
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.movie_ratings));
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerRating.setAdapter(spinnerAdapter);
 
         btnInsert.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                // Create the DBHelper object, passing in the
-                // activity's Context
-
 
                 // Insert a task
                 String title = etMovieTitle.getText().toString().trim();
@@ -64,13 +62,14 @@ public class MainActivity extends AppCompatActivity {
                 String yearToString = etYear.getText().toString().trim();
 
                 int year = Integer.parseInt(yearToString);
-                //int stars = getStarsSelected();
 
                 String selectRatingToString = spinnerRating.getSelectedItem().toString();
-                int selectRatingToInt = Integer.parseInt(selectRatingToString.split(" ")[0]);
+                int selectRatingToInt = getSelectRatingValue(selectRatingToString);
 
                 DBHelp.insertMovie(title, genre, year, selectRatingToInt);
 
+                Toast.makeText(MainActivity.this, "Movie inserted", Toast.LENGTH_SHORT).show();
+                clearAllFields();
 
             }
         });
@@ -83,54 +82,31 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
-        ArrayList<Integer> spinneryears = DBHelp.getSpinnerYears();
-        ArrayAdapter<Integer> spinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, spinneryears);
-        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerRating.setAdapter(spinnerAdapter);
-
-        spinnerRating.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                int mainyear = (int) parent.getItemAtPosition(position);
-                ArrayList<Movie> list = DBHelp.getMovieYear(mainyear);
-                adapter.clear();
-                adapter.addAll(list);
-                adapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
-
     }
 
-    /*
-    private int getStarsSelected() {
-
-        int starsId = rgStars.getCheckedRadioButtonId();
-
-        if (starsId == R.id.radioButton1) {
-            return 1;
+    private int getSelectRatingValue(String rating) {
+        switch (rating) {
+            case "G":
+                return 1;
+            case "PG":
+                return 2;
+            case "PG13":
+                return 3;
+            case "NC16":
+                return 4;
+            case "M18":
+                return 5;
+            case "R21":
+                return 6;
+            default:
+                return 0;
         }
-        else if (starsId == R.id.radioButton2) {
-            return 2;
-        }
-        else if (starsId == R.id.radioButton3) {
-            return 3;
-        }
-        else if (starsId == R.id.radioButton4) {
-            return 4;
-        }
-        else if (starsId == R.id.radioButton5) {
-            return 5;
-        }
-
-        return 0;
-
     }
-    */
+
+    private void clearAllFields() {
+        etMovieTitle.setText("");
+        etGenre.setText("");
+        etYear.setText("");
+    }
+
 }
