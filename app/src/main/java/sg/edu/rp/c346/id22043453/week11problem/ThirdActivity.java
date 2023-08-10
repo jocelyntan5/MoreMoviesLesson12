@@ -34,7 +34,7 @@ public class ThirdActivity extends AppCompatActivity {
         dbHelper =  new DBHelper(this);
 
         Intent intent= getIntent();
-        movie = (Movie) intent.getSerializableExtra("song");
+        movie = (Movie) intent.getSerializableExtra("movie");
         title.setText(movie.getTitle());
         genre.setText(movie.getGenre());
         year.setText(String.valueOf(movie.getYear()));
