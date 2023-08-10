@@ -14,7 +14,7 @@ import android.widget.EditText;
 public class ThirdActivity extends AppCompatActivity {
 
     EditText title, genre, year, star;
-    Button updbtn, dtlbtn;
+    Button btnUpdate, btnDelete, btnCancel;
     Movie movie;
     DBHelper dbHelper;
 
@@ -29,8 +29,8 @@ public class ThirdActivity extends AppCompatActivity {
         genre = findViewById(R.id.editTextGenre);
         year = findViewById(R.id.editTextYear);
         star = findViewById(R.id.editTextStars);
-        updbtn = findViewById(R.id.buttonUpdate);
-        dtlbtn = findViewById(R.id.buttonDelete);
+        btnUpdate = findViewById(R.id.buttonUpdate);
+        btnDelete = findViewById(R.id.buttonDelete);
         dbHelper =  new DBHelper(this);
 
         Intent intent= getIntent();
@@ -39,7 +39,9 @@ public class ThirdActivity extends AppCompatActivity {
         genre.setText(movie.getGenre());
         year.setText(String.valueOf(movie.getYear()));
         star.setText(String.valueOf(movie.getStars()));
-        updbtn.setOnClickListener(new View.OnClickListener() {
+
+
+        btnUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String title1 =  title.getText().toString().trim();
@@ -53,7 +55,9 @@ public class ThirdActivity extends AppCompatActivity {
                 dbHelper.updateMovie(movie);
             }
         });
-        dtlbtn.setOnClickListener(new View.OnClickListener() {
+
+
+        btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -77,6 +81,34 @@ public class ThirdActivity extends AppCompatActivity {
 
             }
         });
+
+
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                AlertDialog.Builder myBuilder = new AlertDialog.Builder(ThirdActivity.this);
+                myBuilder.setTitle("Danger");
+                myBuilder.setMessage("Are you sure you want discard the changes");
+                myBuilder.setCancelable(false);
+
+
+                myBuilder.setPositiveButton("DISCARD", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(ThirdActivity.this, SecondActivity.class);
+                        startActivity(intent);
+                    }
+                });
+
+                myBuilder.setNeutralButton("DO NOT DISCARD", null);
+                AlertDialog myDialog = myBuilder.create();
+                myDialog.show();
+
+            }
+        });
+
+
     }
 
 }
